@@ -42,7 +42,12 @@ pred duplicate [f : File] {
   }
 }
 fact trans {
-  always (empty or (some f : File | delete[f] or restore[f]or permDelete[f] or directDelete[f] or duplicate[f]))
+  always (no Trash or empty or 
+          (some f : File | delete[f] or restore[f] or permDelete[f] or directDelete[f] or duplicate[f]))
 }
+
+check noFileInBoth { always no (File & Trash) }
+check trashEventuallyHandled { always (some Trash implies eventually (no Trash or (some f: Trash | permDelete[f] or restore[f])))}
+check eventuallyEmpty { eventually no File }
 
 run example {}
